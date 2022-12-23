@@ -64,7 +64,7 @@ namespace FakeShimHttpClientMsTestUnitTest.Test
                 var result = JObject.Parse(json);
                 Assert.IsNotNull(result);
                 Assert.IsTrue(result is not null);
-                Assert.IsTrue(result!["result"].Value<string>().StartsWith("fake", StringComparison.OrdinalIgnoreCase));
+                Assert.IsTrue(result!["result"]!.Value<string>()!.StartsWith("fake", StringComparison.OrdinalIgnoreCase));
             }
         }
     }
