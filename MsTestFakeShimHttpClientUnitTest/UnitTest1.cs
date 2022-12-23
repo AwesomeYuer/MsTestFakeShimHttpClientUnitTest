@@ -1,4 +1,4 @@
-namespace Mciroshaoft
+namespace Microshaoft
 {
     using Microsoft.QualityTools.Testing.Fakes;
     using Newtonsoft.Json.Linq;
