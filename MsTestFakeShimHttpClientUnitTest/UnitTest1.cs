@@ -67,5 +67,90 @@ namespace Microshaoft
                 Assert.IsTrue(result!["result"]!.Value<string>()!.StartsWith("fake", StringComparison.OrdinalIgnoreCase));
             }
         }
+        [TestMethod]
+        public void TestMethod2()
+        {
+            var divideByZeroException = new DivideByZeroException();
+            var exceptionMessage = divideByZeroException.Message;
+            Assert
+                .That
+                .Throws
+                    <DivideByZeroException>
+                        (
+                            () =>
+                            {
+                                Task
+                                    .Run
+                                        (
+                                            () =>
+                                            {
+                                                throw new Exception
+                                                            (
+                                                                $"Outter Exception"
+                                                                , divideByZeroException
+                                                                //, new NullReferenceException()
+
+                                                            );
+                                            }
+                                        )
+                                    .Wait();
+                            }
+                            , exceptionMessage
+                        );
+        }
+        [TestMethod]
+        public void TestMethod3()
+        {
+            var divideByZeroException = new DivideByZeroException();
+            var exceptionMessage = new AggregateException().Message;
+            Assert
+                .That
+                .Throws
+                    <AggregateException>
+                        (
+                            () =>
+                            {
+                                Task
+                                    .Run
+                                        (
+                                            () =>
+                                            {
+                                                throw new Exception
+                                                            (
+                                                                $""
+                                                                //, divideByZeroException
+                                                                , new NullReferenceException("", new AggregateException())
+
+                                                            );
+                                            }
+                                        )
+                                    .Wait();
+                            }
+                            , exceptionMessage
+                        );
+        }
+        [TestMethod]
+        public void TestMethod4()
+        {
+            var divideByZeroException = new DivideByZeroException();
+            var exceptionMessage = new AggregateException().Message;
+            Assert
+                .That
+                .Throws
+                    <AggregateException>
+                        (
+                            () =>
+                            {
+                                throw new Exception
+                                            (
+                                                $"Outter Exception"
+                                                //, divideByZeroException
+                                                , new AggregateException()
+                                            );
+                            }
+                            , exceptionMessage
+                            //, drillDownInnerExceptions: false
+                        );
+        }
     }
 }
