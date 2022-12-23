@@ -46,7 +46,7 @@ namespace FakeShimHttpClientMsTestUnitTest.Test
                 //};
 
                 var baseAddress = "https://www.fake.com";
-                var httpClient = new HttpClient
+                HttpClient httpClient = new ()
                 {
                     BaseAddress = new Uri(baseAddress),
                     Timeout = TimeSpan.FromMinutes(5)
