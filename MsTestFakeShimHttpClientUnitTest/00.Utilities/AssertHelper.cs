@@ -68,7 +68,7 @@ namespace Microshaoft
             Exception caughtException = null!;
             Exception caughtExpectedException = null!;
             var foundExpected = false;
-            void drillDownInnerExceptionsProcess(Exception e)
+            void drillDownInnerExceptionProcess(Exception e)
             {
                 if (drillDownInnerExceptions)
                 {
@@ -131,7 +131,7 @@ namespace Microshaoft
                     {
                         if (caughtException.InnerException != null)
                         {
-                            drillDownInnerExceptionsProcess(caughtException.InnerException);
+                            drillDownInnerExceptionProcess(caughtException.InnerException);
                         }
                     }
                 }
@@ -142,7 +142,7 @@ namespace Microshaoft
                     {
                         foreach (var e in innerExceptions)
                         {
-                            drillDownInnerExceptionsProcess(e);
+                            drillDownInnerExceptionProcess(e);
                             if (foundExpected)
                             {
                                 break;
@@ -159,14 +159,14 @@ namespace Microshaoft
             {
                 caughtException = expectedException;
                 caughtExpectedException = expectedException;
-                drillDownInnerExceptionsProcess(caughtExpectedException);
+                drillDownInnerExceptionProcess(caughtExpectedException);
 
             }
             catch (Exception exception)
             {
                 caughtException = exception;
                 caughtExpectedException = exception;
-                drillDownInnerExceptionsProcess(caughtExpectedException);
+                drillDownInnerExceptionProcess(caughtExpectedException);
             }
             Assert
                 .IsTrue
