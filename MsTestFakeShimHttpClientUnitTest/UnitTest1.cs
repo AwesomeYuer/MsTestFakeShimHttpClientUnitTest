@@ -1,11 +1,11 @@
-namespace FakeShimHttpClientMsTestUnitTest.Test
+namespace Mciroshaoft
 {
     using Microsoft.QualityTools.Testing.Fakes;
     using Newtonsoft.Json.Linq;
     using System.Net;
     using System.Net.Http.Fakes;
-    [TestClass, TestCategory(nameof(FakeShimHttpClientMsTestUnitTest))]
-    public class FakeShimHttpClientMsTestUnitTest
+    [TestClass, TestCategory(nameof(MsTestFakeShimHttpClientUnitTest))]
+    public class MsTestFakeShimHttpClientUnitTest
     {
         [TestMethod]
         public void TestMethod1()
