@@ -28,11 +28,10 @@ namespace Microshaoft
                                     new HttpResponseMessage()
                                     {
                                         StatusCode = HttpStatusCode.OK
-                                        ,
-                                        Content = new StringContent
-                                                    (
-                                                        json
-                                                    )
+                                        , Content = new StringContent
+                                                            (
+                                                                json
+                                                            )
                                     }
                                 );
                 };
