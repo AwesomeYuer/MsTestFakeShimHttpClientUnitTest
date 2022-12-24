@@ -122,7 +122,6 @@ The caught actual ""{exception.GetType()}"" as below:
                                                                 {
                                                                     if 
                                                                         (
-                                                                            //ee.GetType() == expectedExceptionType
                                                                             expectedExceptionType
                                                                                             .IsAssignableFrom
                                                                                                     (ee.GetType())
@@ -155,7 +154,12 @@ The caught actual ""{exception.GetType()}"" as below:
             catch (AggregateException aggregateException)
             {
                 caughtException = aggregateException;
-                if (caughtException.GetType() == expectedExceptionType)
+                if 
+                    (
+                        expectedExceptionType
+                                        .IsAssignableFrom
+                                                (caughtException.GetType())
+                    )
                 {
                     if
                         (
