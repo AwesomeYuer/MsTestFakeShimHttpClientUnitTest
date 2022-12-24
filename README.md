@@ -1,4 +1,4 @@
-# FakeShimHttpClientMsTestUnitTest.Test
+# MsTest Fake Shim HttpClient UnitTest
 
 ## Visual Studio Developer Command Line Usage:
 ```
