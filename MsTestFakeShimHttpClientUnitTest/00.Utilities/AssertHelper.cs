@@ -12,7 +12,7 @@ namespace Microshaoft
                                             (
                                                 this Exception @this
                                                 , Func<Exception, bool> onProcessFunc = null!
-                                                , bool drillDownInnerException = true
+                                                , bool needDrillDownInnerException = true
                                             )
         {
             var result = @this;
@@ -26,7 +26,7 @@ namespace Microshaoft
                         break;
                     }
                 }
-                if (!drillDownInnerException)
+                if (!needDrillDownInnerException)
                 {
                     break;
                 }
@@ -63,6 +63,7 @@ namespace Microshaoft
                         );
             }
         }
+
         public static void Throws
                                 <TExpectedException>
                                     (
@@ -70,44 +71,69 @@ namespace Microshaoft
                                         , Action action
                                         , string expectedExceptionMessage = null!
                                         , Action<TExpectedException> onProcessAction = null!
-                                        , bool drillDownInnerExceptions = true
+                                        , bool needDrillDownInnerExceptions = true
                                     )
                                         where TExpectedException : Exception
         {
+            Action<Exception> actionExceptionProcess = null!;
+            if (onProcessAction != null)
+            {
+                actionExceptionProcess = (e) =>
+                {
+                    onProcessAction((TExpectedException) e);
+                };
+            }
+            Throws
+                (
+                    @this
+                    , action
+                    , typeof(TExpectedException)
+                    , expectedExceptionMessage
+                    , actionExceptionProcess
+                    , needDrillDownInnerExceptions
+                );
+        }
+
+        public static void Throws
+                                (
+                                    this Assert @this
+                                    , Action action
+                                    , Type expectedExceptionType
+                                    , string expectedExceptionMessage = null!
+                                    , Action<Exception> onProcessAction = null!
+                                    , bool needDrillDownInnerExceptions = true
+                                )
+        {
             Exception caughtException = null!;
             Exception caughtExpectedException = null!;
-            var foundExpected = false;
+            var foundCaughtExpectedException = false;
             void drillDownInnerExceptionProcess(Exception e)
             {
-                //if (drillDownInnerExceptions)
-                {
-                    caughtExpectedException = e
-                                                .drillDownInnerException
-                                                    (
-                                                        (ee) =>
-                                                        {
-                                                            foundExpected =
+                caughtExpectedException = e
+                                            .drillDownInnerException
+                                                (
+                                                    (ee) =>
+                                                    {
+                                                        foundCaughtExpectedException =
+                                                            (
+                                                                ee.GetType() == expectedExceptionType
+                                                                &&
                                                                 (
-                                                                    ee is TExpectedException
-                                                                    &&
-                                                                    (
-                                                                        string
-                                                                            .Compare
-                                                                                (
-                                                                                    expectedExceptionMessage
-                                                                                    , ee.Message
-                                                                                    , true
-                                                                                ) == 0
-                                                                        ||
-                                                                        string.IsNullOrEmpty(expectedExceptionMessage)
-                                                                    )
-                                                                );
-                                                            return foundExpected;
-                                                        }
-                                                        , drillDownInnerExceptions
-                                                    );
-
-                }
+                                                                    string
+                                                                        .Compare
+                                                                            (
+                                                                                expectedExceptionMessage
+                                                                                , ee.Message
+                                                                                , true
+                                                                            ) == 0
+                                                                    ||
+                                                                    string.IsNullOrEmpty(expectedExceptionMessage)
+                                                                )
+                                                            );
+                                                        return foundCaughtExpectedException;
+                                                    }
+                                                    , needDrillDownInnerExceptions
+                                                );
             }
 
             try
@@ -117,7 +143,7 @@ namespace Microshaoft
             catch (AggregateException aggregateException)
             {
                 caughtException = aggregateException;
-                if (caughtException is TExpectedException)
+                if (caughtException.GetType() == expectedExceptionType)
                 {
                     if
                         (
@@ -132,51 +158,63 @@ namespace Microshaoft
                             string.IsNullOrEmpty(expectedExceptionMessage)
                         )
                     {
-                        foundExpected = true;
+                        caughtExpectedException = caughtException;
+                        foundCaughtExpectedException = true;
                     }
                 }
-                if (!foundExpected)
+                if (!foundCaughtExpectedException)
                 {
-                    if (drillDownInnerExceptions)
+                    if (needDrillDownInnerExceptions)
                     {
                         if (caughtException.InnerException != null)
                         {
                             drillDownInnerExceptionProcess(caughtException.InnerException);
+                            if (!foundCaughtExpectedException)
+                            {
+                                caughtExpectedException = null!;
+                            }
                         }
                     }
                 }
-                if (!foundExpected)
+                if (!foundCaughtExpectedException)
                 {
                     var innerExceptions = aggregateException.Flatten().InnerExceptions;
-                    if (drillDownInnerExceptions)
+                    if (needDrillDownInnerExceptions)
                     {
                         foreach (var e in innerExceptions)
                         {
                             drillDownInnerExceptionProcess(e);
-                            if (foundExpected)
+                            if (foundCaughtExpectedException)
                             {
                                 break;
                             }
                         }
                     }
-                    if (!foundExpected)
+                    if (!foundCaughtExpectedException)
                     {
                         caughtExpectedException = null!;
                     }
                 }
             }
-            catch (TExpectedException expectedException)
-            {
-                caughtException = expectedException;
-                caughtExpectedException = expectedException;
-                drillDownInnerExceptionProcess(caughtExpectedException);
-
-            }
+            //catch (TExpectedException expectedException)
+            //{
+            //    caughtException = expectedException;
+            //    caughtExpectedException = expectedException;
+            //    drillDownInnerExceptionProcess(caughtExpectedException);
+            //    if (!foundCaughtExpectedException)
+            //    {
+            //        caughtExpectedException = null!;
+            //    }
+            //}
             catch (Exception exception)
             {
                 caughtException = exception;
                 caughtExpectedException = exception;
                 drillDownInnerExceptionProcess(caughtExpectedException);
+                if (!foundCaughtExpectedException)
+                {
+                    caughtExpectedException = null!;
+                }
             }
 
             if (caughtException == null)
@@ -184,7 +222,7 @@ namespace Microshaoft
                 Assert
                     .Fail
                         (
-                            $@"Expected exception of type ""{typeof(TExpectedException)}"" but no exception was thrown."
+                            $@"Expected exception of type ""{expectedExceptionType}"" but no exception was thrown."
                         );
             }
             else
@@ -192,15 +230,15 @@ namespace Microshaoft
                 Assert
                     .IsTrue
                         (
-                            foundExpected
-                            , $@"Expected exception of type ""{typeof(TExpectedException)}"" but type of ""{caughtException.GetType()}"" was thrown instead.
+                            foundCaughtExpectedException
+                            , $@"Expected exception of type ""{expectedExceptionType}"" but type of ""{caughtException.GetType()}"" was thrown instead.
 <<<<<<<<<<<<<<<<<<<<<<<<<<
 {caughtException}
 >>>>>>>>>>>>>>>>>>>>>>>>>>
 "
                         );
                 processExpectedExceptionMessage(caughtExpectedException, expectedExceptionMessage);
-                onProcessAction?.Invoke((TExpectedException)caughtExpectedException);
+                onProcessAction?.Invoke(caughtExpectedException);
             }
         }
     }
