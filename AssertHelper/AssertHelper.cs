@@ -110,35 +110,42 @@ The caught actual ""{exception.GetType()}"" as below:
         {
             Exception caughtException = null!;
             Exception caughtExpectedException = null!;
-            var foundCaughtExpectedException = false;
+            Exception caughtExpectedExceptionWithMessage = null!;
+            var foundCaughtExpectedExceptionWithMessage = false;
 
             void drillDownInnerExceptionProcess(Exception e)
             {
-                caughtExpectedException = e
-                                            .drillDownInnerException
-                                                (
-                                                    (ee) =>
-                                                    {
-                                                        foundCaughtExpectedException =
+                caughtExpectedExceptionWithMessage = e
+                                                        .drillDownInnerException
                                                             (
-                                                                ee.GetType() == expectedExceptionType
-                                                                &&
-                                                                (
-                                                                    string
-                                                                        .Compare
+                                                                (ee) =>
+                                                                {
+                                                                    if 
+                                                                        (
+                                                                            //ee.GetType() == expectedExceptionType
+                                                                            expectedExceptionType
+                                                                                            .IsAssignableFrom
+                                                                                                    (ee.GetType())
+                                                                        )
+                                                                    {
+                                                                        caughtExpectedException = ee;
+                                                                        foundCaughtExpectedExceptionWithMessage =
                                                                             (
-                                                                                expectedExceptionMessage
-                                                                                , ee.Message
-                                                                                , true
-                                                                            ) == 0
-                                                                    ||
-                                                                    string.IsNullOrEmpty(expectedExceptionMessage)
-                                                                )
+                                                                                string
+                                                                                    .Compare
+                                                                                        (
+                                                                                            expectedExceptionMessage
+                                                                                            , ee.Message
+                                                                                            , true
+                                                                                        ) == 0
+                                                                                ||
+                                                                                string.IsNullOrEmpty(expectedExceptionMessage)
+                                                                            );
+                                                                    }
+                                                                    return foundCaughtExpectedExceptionWithMessage;
+                                                                }
+                                                                , needDrillDownInnerExceptions
                                                             );
-                                                        return foundCaughtExpectedException;
-                                                    }
-                                                    , needDrillDownInnerExceptions
-                                                );
             }
 
             try
@@ -163,25 +170,26 @@ The caught actual ""{exception.GetType()}"" as below:
                             string.IsNullOrEmpty(expectedExceptionMessage)
                         )
                     {
+                        caughtExpectedExceptionWithMessage = caughtException;
                         caughtExpectedException = caughtException;
-                        foundCaughtExpectedException = true;
+                        foundCaughtExpectedExceptionWithMessage = true;
                     }
                 }
-                if (!foundCaughtExpectedException)
+                if (!foundCaughtExpectedExceptionWithMessage)
                 {
                     if (needDrillDownInnerExceptions)
                     {
                         if (caughtException.InnerException != null)
                         {
                             drillDownInnerExceptionProcess(caughtException.InnerException);
-                            if (!foundCaughtExpectedException)
+                            if (!foundCaughtExpectedExceptionWithMessage)
                             {
-                                caughtExpectedException = null!;
+                                caughtExpectedExceptionWithMessage = null!;
                             }
                         }
                     }
                 }
-                if (!foundCaughtExpectedException)
+                if (!foundCaughtExpectedExceptionWithMessage)
                 {
                     var innerExceptions = aggregateException.Flatten().InnerExceptions;
                     if (needDrillDownInnerExceptions)
@@ -189,15 +197,15 @@ The caught actual ""{exception.GetType()}"" as below:
                         foreach (var e in innerExceptions)
                         {
                             drillDownInnerExceptionProcess(e);
-                            if (foundCaughtExpectedException)
+                            if (foundCaughtExpectedExceptionWithMessage)
                             {
                                 break;
                             }
                         }
                     }
-                    if (!foundCaughtExpectedException)
+                    if (!foundCaughtExpectedExceptionWithMessage)
                     {
-                        caughtExpectedException = null!;
+                        caughtExpectedExceptionWithMessage = null!;
                     }
                 }
             }
@@ -216,9 +224,9 @@ The caught actual ""{exception.GetType()}"" as below:
                 caughtException = exception;
                 caughtExpectedException = exception;
                 drillDownInnerExceptionProcess(caughtExpectedException);
-                if (!foundCaughtExpectedException)
+                if (!foundCaughtExpectedExceptionWithMessage)
                 {
-                    caughtExpectedException = null!;
+                    caughtExpectedExceptionWithMessage = null!;
                 }
             }
 
@@ -232,10 +240,20 @@ The caught actual ""{exception.GetType()}"" as below:
             }
             else
             {
+                if
+                    (
+                        !foundCaughtExpectedExceptionWithMessage
+                        &&
+                        caughtExpectedException != null
+                    )
+                {
+                    processExpectedExceptionMessage(caughtExpectedException, expectedExceptionMessage);
+                }
+                
                 Assert
                     .IsTrue
                         (
-                            foundCaughtExpectedException
+                            foundCaughtExpectedExceptionWithMessage
                             , $@"Expected exception of type ""{expectedExceptionType}"" but actual type of ""{caughtException.GetType()}"" was thrown instead.
 The caught actual ""{caughtException.GetType()}"" as below:
 {_beginSpliterLineOfMessageBlock}
@@ -243,8 +261,7 @@ The caught actual ""{caughtException.GetType()}"" as below:
 {_endSpliterLineOfMessageBlock}
 "
                         );
-                processExpectedExceptionMessage(caughtExpectedException, expectedExceptionMessage);
-                onProcessAction?.Invoke(caughtExpectedException);
+                onProcessAction?.Invoke(caughtExpectedExceptionWithMessage);
             }
         }
     }

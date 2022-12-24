@@ -101,6 +101,8 @@ namespace Microshaoft
         {
             var divideByZeroException = new DivideByZeroException();
             var exceptionMessage = new AggregateException().Message;
+            //exceptionMessage = new NullReferenceException().Message;
+
             Assert
                 .That
                 .Throws
@@ -117,7 +119,7 @@ namespace Microshaoft
                                                             (
                                                                 $""
                                                                 //, divideByZeroException
-                                                                , new NullReferenceException("", new AggregateException())
+                                                                , new NullReferenceException(exceptionMessage, new AggregateException(exceptionMessage))
                                                             );
                                             }
                                         )
@@ -130,7 +132,7 @@ namespace Microshaoft
         public void TestMethod4()
         {
             var divideByZeroException = new DivideByZeroException();
-            var exceptionMessage = new AggregateException().Message + "aa";
+            var exceptionMessage = new AggregateException().Message;
             Assert
                 .That
                 .Throws
@@ -142,7 +144,11 @@ namespace Microshaoft
                                             (
                                                 $"Outter Exception"
                                                 //, divideByZeroException
-                                                , new AggregateException(exceptionMessage)
+                                                , new AggregateException
+                                                                (
+                                                                    exceptionMessage
+                                                                    + "aaa"
+                                                                )
                                             );
                             }
                             , exceptionMessage
@@ -183,6 +189,43 @@ namespace Microshaoft
                                 }
                             }
                             , exceptionMessage
+                        );
+        }
+
+        [TestMethod]
+        public void TestMethod6()
+        {
+            var divideByZeroException = new DivideByZeroException();
+            var exceptionMessage = new AggregateException().Message;
+            //exceptionMessage = new NullReferenceException().Message;
+
+            Assert
+                .That
+                .Throws
+                    <Exception>
+                        (
+                            () =>
+                            {
+                                Task
+                                    .Run
+                                        (
+                                            () =>
+                                            {
+                                                throw new Exception
+                                                            (
+                                                                exceptionMessage + "1"
+                                                                //, divideByZeroException
+                                                                , new NullReferenceException(exceptionMessage + "2", new AggregateException(exceptionMessage))
+                                                            );
+                                            }
+                                        )
+                                    .Wait();
+                            }
+                            , exceptionMessage
+                            , (x) =>
+                            { 
+                                Console.WriteLine ($"Expected Exception Type:\r\n\t{typeof(Exception)}\r\nCaught Actual Exception Type:\r\n\t{x.GetType()},\r\nCaught Actual Exception Message:\r\n\t{x.Message},\r\nCaught Actual Exception:\r\n\t{x}");
+                            }
                         );
         }
     }
