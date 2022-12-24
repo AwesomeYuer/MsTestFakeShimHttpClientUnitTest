@@ -84,7 +84,7 @@ The caught actual ""{exception.GetType()}"" as below:
             {
                 actionExceptionProcess = (e) =>
                 {
-                    onProcessAction((TExpectedException)e);
+                    onProcessAction((TExpectedException) e);
                 };
             }
             Throws
