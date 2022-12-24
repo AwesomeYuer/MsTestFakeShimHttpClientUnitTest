@@ -8,6 +8,9 @@ namespace Microshaoft
 
     public static class AssertHelper
     {
+        private const string _beginSpliterLineOfMessageBlock   = "<<<<<<<<<<<<<<<<<<<<<<<<<<";
+        private const string _endSpliterLineOfMessageBlock     = ">>>>>>>>>>>>>>>>>>>>>>>>>>";
+
         private static Exception drillDownInnerException
                                             (
                                                 this Exception @this
@@ -55,10 +58,10 @@ namespace Microshaoft
                     .IsTrue
                         (
                             string.Compare(expectedExceptionMessage, exception.Message, true) == 0
-                            , $@"Expected exception with a message of ""{expectedExceptionMessage}"" but exception with message of ""{exception.Message}"" was thrown instead.
-<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            , $@"Expected exception of type {exception.GetType()} with a message of ""{expectedExceptionMessage}"" but exception with message of ""{exception.Message}"" was thrown instead.
+{_beginSpliterLineOfMessageBlock}
 {exception}
->>>>>>>>>>>>>>>>>>>>>>>>>>
+{_endSpliterLineOfMessageBlock}
 "
                         );
             }
@@ -233,9 +236,9 @@ namespace Microshaoft
                         (
                             foundCaughtExpectedException
                             , $@"Expected exception of type ""{expectedExceptionType}"" but type of ""{caughtException.GetType()}"" was thrown instead.
-<<<<<<<<<<<<<<<<<<<<<<<<<<
+{_beginSpliterLineOfMessageBlock}
 {caughtException}
->>>>>>>>>>>>>>>>>>>>>>>>>>
+{_endSpliterLineOfMessageBlock}
 "
                         );
                 processExpectedExceptionMessage(caughtExpectedException, expectedExceptionMessage);
