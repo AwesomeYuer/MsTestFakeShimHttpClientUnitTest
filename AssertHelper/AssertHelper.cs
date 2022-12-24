@@ -8,8 +8,8 @@ namespace Microshaoft
 
     public static class AssertHelper
     {
-        private const string _beginSpliterLineOfMessageBlock   = "<<<<<<<<<<<<<<<<<<<<<<<<<<";
-        private const string _endSpliterLineOfMessageBlock     = ">>>>>>>>>>>>>>>>>>>>>>>>>>";
+        private const string _beginSpliterLineOfMessageBlock = "<<<<<<<<<<<<<<<<<<<<<<<<<<";
+        private const string _endSpliterLineOfMessageBlock = ">>>>>>>>>>>>>>>>>>>>>>>>>>";
 
         private static Exception drillDownInnerException
                                             (
@@ -84,7 +84,7 @@ The caught actual ""{exception.GetType()}"" as below:
             {
                 actionExceptionProcess = (e) =>
                 {
-                    onProcessAction((TExpectedException) e);
+                    onProcessAction((TExpectedException)e);
                 };
             }
             Throws
