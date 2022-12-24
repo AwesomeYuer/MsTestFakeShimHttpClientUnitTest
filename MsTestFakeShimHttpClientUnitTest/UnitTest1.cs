@@ -131,7 +131,7 @@ namespace Microshaoft
         public void TestMethod4()
         {
             var divideByZeroException = new DivideByZeroException();
-            var exceptionMessage = new AggregateException().Message;
+            var exceptionMessage = new AggregateException().Message + "aa";
             Assert
                 .That
                 .Throws
@@ -143,7 +143,7 @@ namespace Microshaoft
                                             (
                                                 $"Outter Exception"
                                                 //, divideByZeroException
-                                                , new AggregateException()
+                                                , new AggregateException(exceptionMessage)
                                             );
                             }
                             , exceptionMessage
