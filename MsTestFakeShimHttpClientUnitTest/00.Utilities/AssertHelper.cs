@@ -58,7 +58,7 @@ namespace Microshaoft
                     .IsTrue
                         (
                             string.Compare(expectedExceptionMessage, exception.Message, true) == 0
-                            , $@"Expected exception of type {exception.GetType()} with a message of ""{expectedExceptionMessage}"" but exception with message of ""{exception.Message}"" was thrown instead.
+                            , $@"Expected exception of type {exception.GetType()} with a message of ""{expectedExceptionMessage}"" but expected exception with actual message of ""{exception.Message}"" was thrown instead.
 The caught actual exception as below:
 {_beginSpliterLineOfMessageBlock}
 {exception}
@@ -236,7 +236,7 @@ The caught actual exception as below:
                     .IsTrue
                         (
                             foundCaughtExpectedException
-                            , $@"Expected exception of type ""{expectedExceptionType}"" but type of ""{caughtException.GetType()}"" was thrown instead.
+                            , $@"Expected exception of type ""{expectedExceptionType}"" but actual type of ""{caughtException.GetType()}"" was thrown instead.
 The caught actual exception as below:
 {_beginSpliterLineOfMessageBlock}
 {caughtException}
