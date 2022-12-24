@@ -8,7 +8,12 @@ namespace Microshaoft
 
     public static class AssertHelper
     {
-        private static Exception drillDownInnerException(this Exception @this, Func<Exception, bool> onProcessFunc = null!)
+        private static Exception drillDownInnerException
+                                            (
+                                                this Exception @this
+                                                , Func<Exception, bool> onProcessFunc = null!
+                                                , bool drillDownInnerException = true
+                                            )
         {
             var result = @this;
             while (result != null)
@@ -20,6 +25,10 @@ namespace Microshaoft
                     {
                         break;
                     }
+                }
+                if (!drillDownInnerException)
+                {
+                    break;
                 }
                 result = result.InnerException;
             }
@@ -70,7 +79,7 @@ namespace Microshaoft
             var foundExpected = false;
             void drillDownInnerExceptionProcess(Exception e)
             {
-                if (drillDownInnerExceptions)
+                //if (drillDownInnerExceptions)
                 {
                     caughtExpectedException = e
                                                 .drillDownInnerException
@@ -95,6 +104,7 @@ namespace Microshaoft
                                                                 );
                                                             return foundExpected;
                                                         }
+                                                        , drillDownInnerExceptions
                                                     );
 
                 }
