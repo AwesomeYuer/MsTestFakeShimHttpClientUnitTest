@@ -37,10 +37,10 @@ namespace Microshaoft
         }
 
         private static void processExpectedExceptionMessage
-                                        (
-                                            Exception exception
-                                            , string expectedExceptionMessage = null!
-                                        )
+                                    (
+                                        Exception exception
+                                        , string expectedExceptionMessage = null!
+                                    )
         {
             if
                 (
@@ -107,6 +107,7 @@ namespace Microshaoft
             Exception caughtException = null!;
             Exception caughtExpectedException = null!;
             var foundCaughtExpectedException = false;
+
             void drillDownInnerExceptionProcess(Exception e)
             {
                 caughtExpectedException = e
