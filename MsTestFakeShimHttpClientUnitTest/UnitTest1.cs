@@ -89,7 +89,6 @@ namespace Microshaoft
                                                                 $"Outter Exception"
                                                                 , divideByZeroException
                                                                 //, new NullReferenceException()
-
                                                             );
                                             }
                                         )
@@ -120,7 +119,6 @@ namespace Microshaoft
                                                                 $""
                                                                 //, divideByZeroException
                                                                 , new NullReferenceException("", new AggregateException())
-
                                                             );
                                             }
                                         )
@@ -176,7 +174,6 @@ namespace Microshaoft
                                                                     $""
                                                                     //, divideByZeroException
                                                                     , new NullReferenceException("", new AggregateException())
-
                                                                 );
                                                 }
                                             )
