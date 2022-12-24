@@ -178,18 +178,30 @@ namespace Microshaoft
                 caughtExpectedException = exception;
                 drillDownInnerExceptionProcess(caughtExpectedException);
             }
-            Assert
-                .IsTrue
-                    (
-                        foundExpected
-                        , $@"Expected exception of type ""{typeof(TExpectedException)}"" but type of ""{caughtException.GetType()}"" was thrown instead.
+
+            if (caughtException == null)
+            {
+                Assert
+                    .Fail
+                        (
+                            $@"Expected exception of type ""{typeof(TExpectedException)}"" but no exception was thrown."
+                        );
+            }
+            else
+            {
+                Assert
+                    .IsTrue
+                        (
+                            foundExpected
+                            , $@"Expected exception of type ""{typeof(TExpectedException)}"" but type of ""{caughtException.GetType()}"" was thrown instead.
 <<<<<<<<<<<<<<<<<<<<<<<<<<
 {caughtException}
 >>>>>>>>>>>>>>>>>>>>>>>>>>
 "
-                    );
-            processExpectedExceptionMessage(caughtExpectedException, expectedExceptionMessage);
-            onProcessAction?.Invoke((TExpectedException)caughtExpectedException);
+                        );
+                processExpectedExceptionMessage(caughtExpectedException, expectedExceptionMessage);
+                onProcessAction?.Invoke((TExpectedException)caughtExpectedException);
+            }
         }
     }
 }

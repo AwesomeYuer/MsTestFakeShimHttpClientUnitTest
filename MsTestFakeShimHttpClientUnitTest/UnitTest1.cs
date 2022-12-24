@@ -152,5 +152,42 @@ namespace Microshaoft
                             //, drillDownInnerExceptions: false
                         );
         }
+        [TestMethod]
+        public void TestMethod5()
+        {
+            var divideByZeroException = new DivideByZeroException();
+            var exceptionMessage = new AggregateException().Message;
+            Assert
+                .That
+                .Throws
+                    <AggregateException>
+                        (
+                            () =>
+                            {
+                                try
+                                {
+                                    Task
+                                        .Run
+                                            (
+                                                () =>
+                                                {
+                                                    throw new Exception
+                                                                (
+                                                                    $""
+                                                                    //, divideByZeroException
+                                                                    , new NullReferenceException("", new AggregateException())
+
+                                                                );
+                                                }
+                                            )
+                                        .Wait();
+                                }
+                                catch
+                                {
+                                }
+                            }
+                            , exceptionMessage
+                        );
+        }
     }
 }
