@@ -7,6 +7,11 @@ vstest.console.exe MsTestFakeShimHttpClientUnitTest\bin\Debug\net6.0\MsTestFakeS
 ```
 Above Command Line Console Right Output:
 ```
+Test Run Failed.
+Total tests: 6
+     Passed: 4
+     Failed: 2
+
   Passed TestMethod1 [211 ms]
   Standard Output Messages:
  fake
