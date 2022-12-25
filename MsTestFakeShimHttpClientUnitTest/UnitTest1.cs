@@ -198,7 +198,6 @@ namespace Microshaoft
             var divideByZeroException = new DivideByZeroException();
             var exceptionMessage = new AggregateException().Message;
             //exceptionMessage = new NullReferenceException().Message;
-
             Assert
                 .That
                 .Throws
@@ -226,7 +225,39 @@ namespace Microshaoft
                             { 
                                 Console.WriteLine ($"Expected Exception Type:\r\n\t{typeof(Exception)}\r\nCaught Actual Exception Type:\r\n\t{x.GetType()},\r\nCaught Actual Exception Message:\r\n\t{x.Message},\r\nCaught Actual Exception:\r\n\t{x}");
                             }
+                            //, false
                         );
+        }
+
+        [TestMethod]
+        public void TestMethod7()
+        {
+            var divideByZeroException = new DivideByZeroException();
+            var exceptionMessage = new AggregateException().Message;
+            //exceptionMessage = new NullReferenceException().Message;
+            var x = Assert
+                        .ThrowsException
+                                <AggregateException>
+                                    (
+                                        () =>
+                                        {
+                                            Task
+                                                .Run
+                                                    (
+                                                        () =>
+                                                        {
+                                                            throw new Exception
+                                                                        (
+                                                                            exceptionMessage + "1"
+                                                                            //, divideByZeroException
+                                                                            , new NullReferenceException(exceptionMessage + "2", new AggregateException(exceptionMessage))
+                                                                        );
+                                                        }
+                                                    )
+                                                .Wait();
+                                        }
+                                    );
+            Console.WriteLine($"Expected Exception Type:\r\n\t{typeof(AggregateException)}\r\nCaught Actual Exception Type:\r\n\t{x.GetType()},\r\nCaught Actual Exception Message:\r\n\t{x.Message},\r\nCaught Actual Exception:\r\n\t{x}");
         }
     }
 }
