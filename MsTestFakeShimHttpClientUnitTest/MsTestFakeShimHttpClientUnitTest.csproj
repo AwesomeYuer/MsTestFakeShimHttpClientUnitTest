@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AssertHelper\AssertHelper.csproj" />
+    <ProjectReference Include="..\HttpClientWrapper\HttpClientWrapper.csproj" />
   </ItemGroup>
 
 </Project>
