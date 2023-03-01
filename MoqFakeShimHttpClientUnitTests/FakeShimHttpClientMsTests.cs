@@ -5,6 +5,7 @@ namespace Microshaoft
     using Newtonsoft.Json.Linq;
     using System.Net;
     using System.Net.Http.Fakes;
+    using Microshaoft.MsTest;
     [TestClass, TestCategory(nameof(MsTestFakeShimHttpClientUnitTest))]
     public class MsTestFakeShimHttpClientUnitTest
     {

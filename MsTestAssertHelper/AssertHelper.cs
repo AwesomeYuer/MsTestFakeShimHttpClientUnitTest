@@ -1,6 +1,6 @@
 ﻿#define MsTestUnitTests
 #if MsTestUnitTests
-namespace Microshaoft
+namespace Microshaoft.MsTest
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
