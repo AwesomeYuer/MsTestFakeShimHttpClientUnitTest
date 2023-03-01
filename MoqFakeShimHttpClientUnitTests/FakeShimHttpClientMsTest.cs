@@ -1,5 +1,6 @@
 namespace Microshaoft
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Microsoft.QualityTools.Testing.Fakes;
     using Newtonsoft.Json.Linq;
     using System.Net;
