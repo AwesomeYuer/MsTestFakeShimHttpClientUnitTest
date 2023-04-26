@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HttpClientWrapper.Fakes</name>
+    </assembly>
+    <members>
+        <member name="T:Microshaoft.Fakes.ShimHttpClientHelper">
+            <summary>Shim type of Microshaoft.HttpClientHelper</summary>
+        </member>
+        <member name="M:Microshaoft.Fakes.ShimHttpClientHelper.#ctor">
+            <summary>Initializes a new shim instance</summary>
+        </member>
+        <member name="M:Microshaoft.Fakes.ShimHttpClientHelper.BehaveAsCurrent">
+            <summary>Assigns the &apos;Current&apos; behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="M:Microshaoft.Fakes.ShimHttpClientHelper.BehaveAsNotImplemented">
+            <summary>Assigns the &apos;NotImplemented&apos; behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="P:Microshaoft.Fakes.ShimHttpClientHelper.Behavior">
+            <summary>Assigns the behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="T:Microshaoft.Fakes.ShimHttpClientWrapper">
+            <summary>Shim type of Microshaoft.HttpClientWrapper</summary>
+        </member>
+        <member name="M:Microshaoft.Fakes.ShimHttpClientWrapper.#ctor">
+            <summary>Initializes a new shim instance</summary>
+        </member>
+        <member name="M:Microshaoft.Fakes.ShimHttpClientWrapper.#ctor(Microshaoft.HttpClientWrapper)">
+            <summary>Initializes a new shim for the given instance</summary>
+        </member>
+        <member name="T:Microshaoft.Fakes.ShimHttpClientWrapper.AllInstances">
+            <summary>Define shims for all instances members</summary>
+        </member>
+        <member name="P:Microshaoft.Fakes.ShimHttpClientWrapper.AllInstances.SendAsync">
+            <summary>Sets the Shim of HttpClientWrapper.SendAsync(HttpClientWrapper this)</summary>
+        </member>
+        <member name="M:Microshaoft.Fakes.ShimHttpClientWrapper.BehaveAsCurrent">
+            <summary>Assigns the &apos;Current&apos; behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="M:Microshaoft.Fakes.ShimHttpClientWrapper.BehaveAsNotImplemented">
+            <summary>Assigns the &apos;NotImplemented&apos; behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="P:Microshaoft.Fakes.ShimHttpClientWrapper.Behavior">
+            <summary>Assigns the behavior for all methods of the shimmed type</summary>
+        </member>
+        <member name="P:Microshaoft.Fakes.ShimHttpClientWrapper.Constructor">
+            <summary>Sets the Shim of HttpClientWrapper.HttpClientWrapper(HttpClientWrapper this)</summary>
+        </member>
+        <member name="P:Microshaoft.Fakes.ShimHttpClientWrapper.SendAsync">
+            <summary>Sets the Shim of HttpClientWrapper.SendAsync(HttpClientWrapper this)</summary>
+        </member>
+        <member name="T:Microshaoft.Fakes.StubHttpClientWrapper">
+            <summary>Stub type of Microshaoft.HttpClientWrapper</summary>
+        </member>
+        <member name="M:Microshaoft.Fakes.StubHttpClientWrapper.#ctor">
+            <summary>Initializes a new instance</summary>
+        </member>
+        <member name="P:Microshaoft.Fakes.StubHttpClientWrapper.CallBase">
+            <summary>Gets or sets a value that indicates if the base method should be called instead of the fallback behavior</summary>
+        </member>
+        <member name="M:Microshaoft.Fakes.StubHttpClientWrapper.InitializeStub">
+            <summary>Initializes a new instance of type StubHttpClientWrapper</summary>
+        </member>
+        <member name="P:Microshaoft.Fakes.StubHttpClientWrapper.InstanceBehavior">
+            <summary>Gets or sets the instance behavior.</summary>
+        </member>
+        <member name="P:Microshaoft.Fakes.StubHttpClientWrapper.InstanceObserver">
+            <summary>Gets or sets the instance observer.</summary>
+        </member>
+    </members>
+</doc>

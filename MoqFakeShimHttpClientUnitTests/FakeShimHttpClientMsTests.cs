@@ -6,6 +6,9 @@ namespace Microshaoft
     using System.Net;
     using System.Net.Http.Fakes;
     using Microshaoft.MsTest;
+    using Microshaoft.Fakes;
+    using System.Reflection;
+
     [TestClass, TestCategory(nameof(MsTestFakeShimHttpClientUnitTest))]
     public class MsTestFakeShimHttpClientUnitTest
     {
@@ -14,14 +17,33 @@ namespace Microshaoft
         {
             using (ShimsContext.Create())
             {
-                //ShimHttpClient.Constructor = (@this) =>
-                //{
-                //    Console.WriteLine($"Fake {nameof(ShimHttpClient)}");
-                //};
+                var httpClientWrapper = new HttpClientWrapper();
+                Type type = typeof(HttpClientWrapper);
+                var fieldInfo =
+                            type
+                                .GetField
+                                    (
+                                         "_httpClient"
+                                        ,
+                                            BindingFlags.NonPublic
+                                            |
+                                            BindingFlags.Instance
+                                    )!;
 
-                ShimHttpClient.AllInstances.SendAsyncHttpRequestMessage = (x, y) =>
+                var shimHttpClient =
+                            new ShimHttpClient
+                                    (
+                                       (HttpClient)
+                                            fieldInfo
+                                                .GetValue
+                                                    (
+                                                        httpClientWrapper
+                                                    )!
+                                    );
+
+                shimHttpClient.SendAsyncHttpRequestMessage = (x) =>
                 {
-                    Console.WriteLine(y.RequestUri);
+                    Console.WriteLine(x.RequestUri);
                     var json = $@"{{ ""result"" : ""Fake {nameof(ShimHttpClient.AllInstances.SendAsyncHttpRequestMessage)}.{nameof(HttpResponseMessage)}"" }}";
                     return
                         Task
@@ -29,9 +51,8 @@ namespace Microshaoft
                                 (
                                     new HttpResponseMessage()
                                     {
-                                        StatusCode = HttpStatusCode.OK
-                                        ,
-                                        Content = new StringContent
+                                          StatusCode = HttpStatusCode.OK
+                                        , Content = new StringContent
                                                             (
                                                                 json
                                                             )
@@ -39,26 +60,8 @@ namespace Microshaoft
                                 );
                 };
 
-                //ShimHttpContent.AllInstances.ReadAsStringAsync = (x) =>
-                //{
-                //    return
-                //        Task
-                //            .FromResult
-                //                    ("9999");
-                //};
+                var responseMessage = httpClientWrapper.SendAsync().Result;
 
-                var baseAddress = "https://www.fake.com";
-                HttpClientWrapper httpClient = new()
-                {
-                    BaseAddress = new Uri(baseAddress),
-                    Timeout = TimeSpan.FromMinutes(5)
-                };
-                var relativeUrl = $"fake";
-                var requestMessage = new HttpRequestMessage(HttpMethod.Post, new Uri(relativeUrl, UriKind.Relative))
-                {
-                    Content = new StringContent("{}")
-                };
-                var responseMessage = httpClient.SendAsync(requestMessage).Result;
                 Assert.AreEqual(responseMessage.StatusCode, HttpStatusCode.OK);
                 var json = responseMessage.Content.ReadAsStringAsync().Result;
                 Console.WriteLine(responseMessage.StatusCode);
